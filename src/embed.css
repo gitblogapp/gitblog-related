@@ -1,6 +1,19 @@
 /* Compact form of GitBlog's shelf-heading, post-card and repo-context styles. */
-:root {
+:root,
+:root[data-theme] {
   background: transparent;
+  /* Keep the iframe canvas transparent even when its host uses another color scheme. */
+  color-scheme: normal;
+  --border: rgb(31 35 40 / 16%);
+  --border-strong: rgb(31 35 40 / 30%);
+  --card-background: rgb(255 255 255 / 38%);
+  --card-hover: rgb(127 127 127 / 6%);
+  --cover-1: rgb(127 127 127 / 7%);
+}
+:root[data-theme="dark"] {
+  --border: rgb(240 246 252 / 16%);
+  --border-strong: rgb(240 246 252 / 30%);
+  --card-background: rgb(255 255 255 / 3%);
 }
 * {
   box-sizing: border-box;
@@ -9,18 +22,16 @@ html,
 body {
   margin: 0;
   min-height: 0;
+  background: transparent;
 }
 body {
-  padding: 1px;
+  padding: 4px;
 }
 #related:empty {
   display: none;
 }
 #related {
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface);
+  background: transparent;
 }
 .heading {
   display: flex;
@@ -68,12 +79,13 @@ body {
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 6px;
-  background: var(--surface);
+  background: var(--card-background);
   color: inherit;
   text-decoration: none;
 }
 .card:hover {
   border-color: var(--border-strong);
+  background: var(--card-hover);
 }
 .card-content {
   display: flex;
@@ -216,9 +228,6 @@ a:focus-visible {
   color: var(--muted);
 }
 @media (max-width: 520px) {
-  #related {
-    padding: 14px;
-  }
   .cards {
     grid-template-columns: 1fr;
   }
