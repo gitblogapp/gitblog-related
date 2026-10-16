@@ -31,6 +31,9 @@ body {
   display: none;
 }
 #related {
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
   background: transparent;
 }
 .heading {
@@ -228,6 +231,9 @@ a:focus-visible {
   color: var(--muted);
 }
 @media (max-width: 520px) {
+  #related {
+    padding: 14px;
+  }
   .cards {
     grid-template-columns: 1fr;
   }
