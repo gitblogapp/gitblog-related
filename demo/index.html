@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GitBlog Related · Embed playground</title>
+    <style>
+      :root {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "Noto Sans KR", sans-serif;
+        color: #1f2328;
+        background: #f6f8fa;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      .wrap {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 32px 24px;
+      }
+      .masthead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #25292e;
+        color: #f0f6fc;
+        padding: 16px 20px;
+        margin: -32px -24px 32px;
+      }
+      .wordmark {
+        font-weight: 600;
+        font-size: 17px;
+      }
+      .badge {
+        font-size: 10px;
+        border: 1px solid #57606a;
+        padding: 4px 8px;
+        border-radius: 99px;
+        color: #f0f6fc;
+      }
+      .eyebrow {
+        font-size: 11px;
+        color: #656d76;
+        font-weight: 600;
+      }
+      h1 {
+        font-size: 24px;
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+        margin: 8px 0 12px;
+      }
+      .lead {
+        font-size: 13px;
+        line-height: 1.7;
+        color: #656d76;
+        max-width: 720px;
+        margin-bottom: 28px;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+      }
+      .controls {
+        padding: 18px;
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+      }
+      .controls h2 {
+        font-size: 16px;
+        margin: 0 0 20px;
+      }
+      .field {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        margin: 16px 0 6px;
+      }
+      select,
+      input,
+      button {
+        font: inherit;
+      }
+      select,
+      input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #d0d7de;
+        background: #f6f8fa;
+        border-radius: 6px;
+        font-size: 12px;
+        color: #1f2328;
+      }
+      button {
+        border: 1px solid #1a7f37;
+        border-radius: 6px;
+        background: #1f883d;
+        color: white;
+        padding: 7px 12px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      button.secondary {
+        background: #f6f8fa;
+        color: #1f2328;
+        border-color: #d0d7de;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+      }
+      .status {
+        font-size: 12px;
+        line-height: 1.7;
+        color: #656d76;
+        margin: 20px 0 0;
+      }
+      .preview {
+        padding: 24px;
+        background: white;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        min-width: 0;
+      }
+      .article-category {
+        font-size: 10px;
+        color: #0969da;
+      }
+      .preview h2 {
+        font-size: 22px;
+        letter-spacing: -0.025em;
+        line-height: 1.4;
+        margin: 12px 0 18px;
+      }
+      .article-body {
+        font-size: 13px;
+        line-height: 1.8;
+        color: #424a53;
+      }
+      .rule {
+        border: 0;
+        border-top: 1px solid #d0d7de;
+        margin: 24px 0;
+      }
+      .embed-label {
+        font-size: 10px;
+        color: #656d76;
+        margin-bottom: 12px;
+      }
+      .foot {
+        font-size: 11px;
+        color: #656d76;
+        margin-top: 20px;
+        line-height: 1.8;
+      }
+      .preview[data-theme="dark"] {
+        background: #0d1117;
+        color: #f0f6fc;
+        border-color: #30363d;
+      }
+      .preview[data-theme="dark"] .article-body {
+        color: #b1bac4;
+      }
+      .preview[data-theme="dark"] .rule {
+        border-color: #30363d;
+      }
+      .preview[data-theme="dark"] .article-category {
+        color: #58a6ff;
+      }
+      a {
+        color: inherit;
+      }
+      @media (max-width: 800px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        .wrap {
+          padding: 24px 16px;
+        }
+        .masthead {
+          margin: -24px -16px 24px;
+        }
+        .preview {
+          padding: 16px;
+        }
+        .controls {
+          max-width: none;
+        }
+      }
+      :focus-visible {
+        outline: 2px solid #0969da;
+        outline-offset: 2px;
+      }
+    </style>
+    <script src="/related/v1/client.js" defer></script>
+    <script src="./demo.js" defer></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="masthead">
+        <span class="wordmark">gitblog / related</span
+        ><span class="badge">EMBED PLAYGROUND · v1</span>
+      </header>
+      <p class="eyebrow">GitBlog / 독립 임베드</p>
+      <h1>추천 패널 미리보기</h1>
+      <p class="lead">
+        스크립트 하나로 연결하는 GitBlog 추천 패널. 아래에서 글과 테마를
+        바꿔보세요. 이 페이지는 템플릿이나 프레임워크에 의존하지 않는 HTML
+        데모입니다.
+      </p>
+      <div class="layout">
+        <aside class="controls">
+          <h2>패널 설정</h2>
+          <form id="settings">
+            <label class="field" for="sample">샘플 글 / 상태</label
+            ><select id="sample">
+              <option value="1">Svelte 컴포넌트 설계</option>
+              <option value="2">커피를 기록하는 방법</option>
+              <option value="3">관련 글 없음</option>
+              <option value="4">API 오류</option>
+            </select>
+            <label class="field" for="repo">저장소</label
+            ><input id="repo" value="demo/blog" required />
+            <label class="field" for="postId">원본 글 UUID</label
+            ><input
+              id="postId"
+              value="00000000-0000-4000-8000-000000000001"
+              required
+            />
+            <label class="field" for="theme">테마</label
+            ><select id="theme">
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="auto">System</option>
+            </select>
+            <label class="field" for="lang">현재 글 언어</label
+            ><select id="lang">
+              <option value="ko">한국어</option>
+              <option value="en">English</option>
+            </select>
+            <label class="field" for="showThumbnail">썸네일</label>
+            <select id="showThumbnail">
+              <option value="true">표시</option>
+              <option value="false">숨김</option>
+            </select>
+            <label class="field" for="limit">표시 개수</label
+            ><select id="limit">
+              <option>4</option>
+              <option>2</option>
+              <option>6</option>
+            </select>
+            <div class="actions">
+              <button type="submit">적용</button
+              ><button id="destroy" class="secondary" type="button">
+                패널 제거
+              </button>
+            </div>
+          </form>
+          <p id="state" class="status" role="status">준비 중</p>
+          <p id="mode" class="foot"></p>
+        </aside>
+        <main class="preview" id="preview">
+          <span class="article-category">NOTE / ENGINEERING</span>
+          <h2 id="article-title">작게 나누고, 느슨하게 연결하기</h2>
+          <p class="article-body">
+            블로그의 본문은 블로그가 관리하고, 추천 패널은 독립적으로
+            업데이트합니다. 글의 고유 ID를 전달하면 GitBlog에 수집된 공개 글에서
+            다음으로 읽을 이야기를 찾아줍니다.
+          </p>
+          <hr class="rule" />
+          <div class="embed-label">INDEPENDENT IFRAME ↓</div>
+          <div id="panel"></div>
+        </main>
+      </div>
+      <footer class="foot">
+        GitBlog Related · 샘플 추천은 데모용 고정 데이터입니다. 실제 추천 API
+        연결 방법은 README를 참고하세요.
+      </footer>
+    </div>
+  </body>
+</html>

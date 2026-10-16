@@ -1,0 +1,32 @@
+{
+  "name": "@gitblog/related",
+  "version": "0.1.0",
+  "description": "Framework-independent related article embed for GitBlog",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs && tsc --emitDeclarationOnly",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "dev": "npm run build && node scripts/dev.mjs",
+    "export:gitblog": "npm run build && node scripts/export.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
+    "happy-dom": "^21.0.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

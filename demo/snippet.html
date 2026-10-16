@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GitBlog Related · Script embeds</title>
+    <style>
+      body {
+        margin: 24px auto;
+        padding: 0 16px;
+        max-width: 760px;
+        font-family: system-ui;
+        background: #f6f8fa;
+        color: #1f2328;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      h2 {
+        margin-top: 32px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>독립 스크립트 임베드</h1>
+    <p>
+      두 패널이 각각 다른 글·테마·개수로 동작합니다. 샘플 데이터 모드에서
+      확인하세요.
+    </p>
+    <h2>Svelte · Light</h2>
+    <script
+      async
+      src="/related/v1/client.js"
+      data-repo="demo/blog"
+      data-post-id="00000000-0000-4000-8000-000000000001"
+      data-lang="ko"
+      data-theme="light"
+      data-limit="4"
+      data-loading="eager"
+    ></script>
+    <h2>커피 · Dark · 썸네일 숨김</h2>
+    <script
+      async
+      src="/related/v1/client.js"
+      data-repo="demo/blog"
+      data-post-id="00000000-0000-4000-8000-000000000002"
+      data-lang="ko"
+      data-theme="dark"
+      data-show-thumbnail="false"
+      data-limit="2"
+      data-loading="eager"
+    ></script>
+  </body>
+</html>
