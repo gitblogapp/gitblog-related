@@ -68,3 +68,17 @@ it("does not display another language when an explicit article language was supp
   await embed("lang=ko");
   expect(document.querySelector(".card")).toBeNull();
 });
+it("changes only the theme without fetching again or replacing article DOM", async () => {
+  const fetch = await embed("lang=en&parentOrigin=https%3A%2F%2Fblog.example&instance=theme-test");
+  await vi.waitFor(() => expect(document.querySelector(".article-title")).not.toBeNull());
+  const article = document.querySelector(".article-title");
+  for (const theme of ["dark", "light"]) {
+    window.dispatchEvent(new MessageEvent("message", {
+      origin: "https://blog.example", source: window.parent,
+      data: { gitblogRelated: { version: 1, instance: "theme-test", theme } },
+    }));
+    expect(document.documentElement.dataset.theme).toBe(theme);
+    expect(document.querySelector(".article-title")).toBe(article);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  }
+});

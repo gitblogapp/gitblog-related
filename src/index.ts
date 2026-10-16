@@ -22,6 +22,7 @@ export function mount(target: HTMLElement, options: Options): Panel {
   let config = resolveConfig();
   mounted.get(target)?.destroy();
   let dispose = () => {};
+  let applyAppearance = (_next: Config) => {};
   let destroyed = false;
   function render(current: Config) {
     dispose();
@@ -55,6 +56,10 @@ export function mount(target: HTMLElement, options: Options): Panel {
         origin,
       );
     }
+    applyAppearance = (next) => {
+      current = next;
+      syncTheme();
+    };
     let timer: ReturnType<typeof setTimeout> | undefined;
     let previous: State | undefined;
     function state(next: State) {
@@ -149,6 +154,7 @@ export function mount(target: HTMLElement, options: Options): Panel {
     update(next) {
       if (destroyed) throw new Error("Panel is destroyed.");
       const previous = input;
+      const previousConfig = config;
       input = { ...input, ...next };
       try {
         config = resolveConfig();
@@ -156,7 +162,11 @@ export function mount(target: HTMLElement, options: Options): Panel {
         input = previous;
         throw error;
       }
-      render(config);
+      const contentChanged = (
+        ["repo", "postId", "lang", "showThumbnail", "limit", "loading", "baseUrl"] as const
+      ).some((key) => config[key] !== previousConfig[key]);
+      if (contentChanged) render(config);
+      else applyAppearance(config);
     },
     destroy() {
       if (destroyed) return;

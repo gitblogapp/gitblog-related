@@ -102,6 +102,49 @@ it("replaces an old article on update and ignores its late messages", () => {
     "000000000002",
   );
 });
+it("updates themes in place without navigating or resetting a ready panel", () => {
+  const onState = vi.fn();
+  const instance = panel({ theme: "light", onState });
+  const frame = target.querySelector("iframe")!;
+  const src = frame.src;
+  message(frame);
+  const count = onState.mock.calls.length;
+  for (const theme of ["dark", "light", "dark"] as const) {
+    instance.update({ theme });
+    expect(target.querySelector("iframe")).toBe(frame);
+    expect(frame.src).toBe(src);
+    expect(frame.style.height).toBe("400px");
+    expect(frame.style.visibility).toBe("visible");
+    expect(onState).toHaveBeenCalledTimes(count);
+    expect(frame.contentWindow!.postMessage).toHaveBeenLastCalledWith(
+      { gitblogRelated: { version: 1, instance: new URL(src).searchParams.get("instance"), theme } },
+      "https://gitblog.app",
+    );
+  }
+  frame.dispatchEvent(new Event("load"));
+  expect(frame.contentWindow!.postMessage).toHaveBeenLastCalledWith(
+    expect.objectContaining({ gitblogRelated: expect.objectContaining({ theme: "dark" }) }),
+    "https://gitblog.app",
+  );
+  instance.update({ limit: 2 });
+  expect(target.querySelector("iframe")).not.toBe(frame);
+  expect(new URL(target.querySelector("iframe")!.src).searchParams.get("limit")).toBe("2");
+});
+it("retains lazy loading when the theme changes before the panel enters view", () => {
+  let enter = (_entries: { isIntersecting: boolean }[]) => {};
+  vi.stubGlobal("IntersectionObserver", class {
+    constructor(callback: typeof enter) { enter = callback; }
+    observe() {}
+    disconnect() {}
+  });
+  const instance = panel({ loading: "lazy", theme: "light" });
+  const frame = target.querySelector("iframe")!;
+  instance.update({ theme: "dark" });
+  expect(target.querySelector("iframe")).toBe(frame);
+  expect(frame.getAttribute("src")).toBeNull();
+  enter([{ isIntersecting: true }]);
+  expect(new URL(frame.src).searchParams.get("theme")).toBe("dark");
+});
 it("cleans up on destroy and prevents duplicate mounts on one target", () => {
   const first = panel();
   panel();

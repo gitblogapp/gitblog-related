@@ -63,6 +63,7 @@ const panel = mount(document.querySelector("#related"), {
 // 글 이동 시 호출. 이전 iframe, 타이머, 이벤트와 observer를 정리합니다.
 panel.update({ postId: "00000000-0000-4000-8000-000000000002", lang: "en" });
 panel.update({ showThumbnail: false });
+panel.update({ theme: "dark" }); // iframe과 카드 DOM을 유지하고 테마만 변경
 // 페이지 컴포넌트가 해제될 때 반드시 호출합니다.
 panel.destroy();
 ```
