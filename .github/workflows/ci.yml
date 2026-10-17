@@ -1,10 +1,17 @@
 name: CI
 on: [push, pull_request]
+
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -13,3 +20,62 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run build
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'gitblogapp/gitblog-related' && github.repository_id == '1423079561'
+        with:
+          name: related-dist
+          path: dist/
+          retention-days: 7
+
+  deploy:
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'gitblogapp/gitblog-related' && github.repository_id == '1423079561'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+    concurrency:
+      group: related-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: related-dist
+          path: dist/
+      - name: Confirm this is still the latest main commit
+        id: latest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(gh api repos/gitblogapp/gitblog-related/git/ref/heads/main --jq '.object.sha')
+          if [ "$latest" = "$GITHUB_SHA" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Skipping superseded commit $GITHUB_SHA"
+          fi
+      - name: Preserve deployed assets and prepare release
+        if: steps.latest.outputs.deploy == 'true'
+        run: npm run prepare:deploy
+      - name: Deploy related panel
+        if: steps.latest.outputs.deploy == 'true'
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Configure CLOUDFLARE_API_TOKEN secret and CLOUDFLARE_ACCOUNT_ID variable in the original repository."
+            exit 1
+          fi
+          npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Verify deployed release
+        if: steps.latest.outputs.deploy == 'true'
+        env:
+          EXPECTED_REVISION: ${{ github.sha }}
+        run: node scripts/verify-deploy.mjs
