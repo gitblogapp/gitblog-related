@@ -9,7 +9,5 @@
     "html_handling": "none",
     "not_found_handling": "404-page"
   },
-  "routes": [
-    { "pattern": "gitblog.app/related/v1/*", "zone_name": "gitblog.app" }
-  ]
+  "routes": []
 }

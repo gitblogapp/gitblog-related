@@ -10,6 +10,7 @@ for (let attempt = 0; ; attempt++) {
       assert.equal(response.status, 200, name);
       assert.equal(response.headers.get("access-control-allow-origin"), "*", name);
       assert.equal(response.headers.get("x-gitblog-related"), "standalone", name);
+      assert.equal(response.headers.get("x-gitblog-related-transport"), "service-binding", name);
       assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(`.deploy/related/v1/${name}`), name);
     }
     console.log("Production assets match this release.");
